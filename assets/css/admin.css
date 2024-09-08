@@ -1,0 +1,10 @@
+body {
+  background: url(../images/bg3.png) repeat !important;
+}
+.bg {
+  background-color: rgb(141, 13, 130);
+  color: white;
+}
+h4 {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}

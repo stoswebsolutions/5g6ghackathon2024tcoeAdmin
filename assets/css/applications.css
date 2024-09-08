@@ -1,0 +1,33 @@
+.container-custom {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+.view-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.card-custom {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+.card-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+.btn-accept {
+  background-color: #28a745;
+  color: white;
+}
+.btn-decline {
+  background-color: #dc3545;
+  color: white;
+}
