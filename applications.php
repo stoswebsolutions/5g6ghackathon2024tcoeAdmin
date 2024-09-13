@@ -39,8 +39,7 @@ $uniqueId = $_SESSION['uniqueId'];
                         <i class="bi bi-person-circle" style="font-size: 2rem"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="listDropdown">
-                        <li><a class="dropdown-item" href="admin">card</a></li>
-                        <li><a class="dropdown-item" href="dashboard">Dashboard</a></li>
+                        <li><a class="dropdown-item" href="application">Home</a></li>
                         <li><a class="dropdown-item" href="users">Users</a></li>
                         <li><a class="dropdown-item" href="applications">Applications</a></li>
                         <li><a class="dropdown-item" href="logout">Logout</a></li>
@@ -63,7 +62,7 @@ $uniqueId = $_SESSION['uniqueId'];
             <div class="tab-pane fade show active" id="card-tab-pane" role="tabpanel" aria-labelledby="card-tab" tabindex="0">
                 <div class="row">
                     <?php
-                    $sql = "SELECT * FROM applicant ";
+                    $sql = "SELECT * FROM applicant where uniqueId NOT IN(3,15,426)";
                     $stmt = $conn->prepare($sql);
                     $stmt->execute();
                     $result = $stmt->get_result();

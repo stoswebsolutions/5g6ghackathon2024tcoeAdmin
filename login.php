@@ -23,7 +23,7 @@ if ($sql->num_rows > 0) {
         // Password is correct, start a session
         $_SESSION['uniqueId'] = $uniqueId;
         echo "<script>alert('Login successful! Welcome,');</script>";
-        echo "<script> window.location.href='admin';</script>";
+        echo "<script> window.location.href='application';</script>";
     } else {
         echo "<script>alert('Invalid email or password!');</script>";
         echo "<script> window.location.href='home#authModal';</script>";

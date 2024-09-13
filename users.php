@@ -39,8 +39,7 @@ $uniqueId = $_SESSION['uniqueId'];
                         <i class="bi bi-person-circle" style="font-size: 2rem"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                        <li><a class="dropdown-item" href="admin">Home</a></li>
-                        <li><a class="dropdown-item" href="dashboard">Dashboard</a></li>
+                        <li><a class="dropdown-item" href="application">Home</a></li>
                         <li><a class="dropdown-item" href="users">Users</a></li>
                         <li><a class="dropdown-item" href="applications">Applications</a></li>
                         <li><a class="dropdown-item" href="logout">Logout</a></li>
@@ -72,7 +71,7 @@ $uniqueId = $_SESSION['uniqueId'];
                         $email = '';
                         $categoryType = '';
                         $categoryName = '';
-                        $sql = "SELECT * FROM users WHERE role = 'participant' ";
+                        $sql = "SELECT * FROM users WHERE role = 'participant' and uniqueId NOT IN(3,15,426) ";
                         $stmt = $conn->prepare($sql);
                         $stmt->execute();
                         $result = $stmt->get_result();
@@ -136,7 +135,7 @@ $uniqueId = $_SESSION['uniqueId'];
         }
     });
 </script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
 </html>
