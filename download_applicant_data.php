@@ -18,7 +18,7 @@ $sql = "SELECT fullname,u.mobile,u.email,u.categoryType,u.uniqueId AS UuniqueId,
             t.presentationVideo, t.presentationURL, t.technologyLevel,
             t.proofPoC, t.describeProduct, t.productPatent,
             t.patentDetails, t.similarProduct, t.similarProductFile,
-            d.shareholding, d.incorporation, d.idProof,a.createAt FROM users u LEFT JOIN applicant a ON  u.uniqueId = a.uniqueId LEFT JOIN technical t ON u.uniqueId = t.uniqueId LEFT JOIN documents d ON u.uniqueId = d.uniqueId WHERE u.role = 'participant' and u.uniqueId NOT IN(3,15,426) ORDER BY a.uniqueId IS NULL,u.uniqueId";
+            d.shareholding, d.incorporation, d.idProof,a.createAt FROM users u LEFT JOIN applicant a ON  u.uniqueId = a.uniqueId LEFT JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant LEFT JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant WHERE u.role = 'participant' and u.uniqueId NOT IN(3,15,426) GROUP BY u.email ORDER BY a.uniqueId IS NULL,u.uniqueId";
 
 $result = $conn->query($sql);
 
