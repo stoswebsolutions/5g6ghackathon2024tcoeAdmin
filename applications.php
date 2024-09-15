@@ -2,7 +2,7 @@
 session_start();
 include 'db_connect.php';
 if (!isset($_SESSION['uniqueId'])) {
-    header("Location: card");
+    header("Location: home");
     exit();
 }
 $uniqueId = $_SESSION['uniqueId'];
