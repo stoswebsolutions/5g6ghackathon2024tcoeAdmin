@@ -71,7 +71,7 @@ $uniqueId = $_SESSION['uniqueId'];
                         $email = '';
                         $categoryType = '';
                         $categoryName = '';
-                        $sql = "SELECT * FROM users WHERE role = 'participant' and uniqueId NOT IN(3,15,426) ";
+                        $sql = "SELECT * FROM users WHERE role = 'participant' and uniqueId NOT IN(15,426) ";
                         $stmt = $conn->prepare($sql);
                         $stmt->execute();
                         $result = $stmt->get_result();

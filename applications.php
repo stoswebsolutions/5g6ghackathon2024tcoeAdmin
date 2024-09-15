@@ -62,7 +62,7 @@ $uniqueId = $_SESSION['uniqueId'];
             <div class="tab-pane fade show active" id="card-tab-pane" role="tabpanel" aria-labelledby="card-tab" tabindex="0">
                 <div class="row">
                     <?php
-                    $sql = "SELECT * FROM applicant where uniqueId NOT IN(3,15,426)";
+                    $sql = "SELECT * FROM applicant where uniqueId NOT IN(15,426)";
                     $stmt = $conn->prepare($sql);
                     $stmt->execute();
                     $result = $stmt->get_result();
