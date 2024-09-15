@@ -342,7 +342,7 @@ $participantId = '';
                     ?>
                 </div>
                 <div class="col-md-5">
-                    <h5 class="text-center">Criteria Base Points</h5>
+                    <h5 class="text-center">Review and Assign Marks</h5>
                     <?php
                     $sql1 = "SELECT * FROM points where uniqueApplicant = '$uniqueApplicant'";
                     $result1 = $conn->query($sql1);
@@ -396,7 +396,7 @@ $participantId = '';
                         }
                     } else {
                         ?>
-                        <form action="points" method="post">
+                        <form action="points" method="post" onsubmit="return validateForm()">
                             <input type="hidden" name="juryId" id="juryId" value="<?= $juryId ?>">
                             <input type="hidden" name="participantId" id="participantId" value="<?= $participantId ?>">
                             <input type="hidden" name="uniqueApplicant" id="uniqueApplicant" value="<?= $uniqueApplicant ?>">
@@ -404,27 +404,27 @@ $participantId = '';
                                 <table class="table table-striped">
                                     <tr>
                                         <th>Idea Originality: Novelty and innovation of the solution. (30%)</th>
-                                        <td><input type="text" class="form-control" min="0" max="30" name="criteria1" id="criteria1" required></td>
+                                        <td><input type="number" class="form-control" style="width: 75px;" min="0" max="30" name="criteria1" id="criteria1" required></td>
                                         <td class="text-danger">Max&nbsp;Points <= 30</td>
                                     </tr>
                                     <tr>
                                         <th>Problem Relevance: How well the solution addresses a real-world problem. (30%)</th>
-                                        <td><input type="text" class="form-control" min="0" max="30" name="criteria2" id="criteria2" required></td>
+                                        <td><input type="number" class="form-control" style="width: 75px;" min="0" max="30" name="criteria2" id="criteria2" required></td>
                                         <td class="text-danger">Max&nbsp;Points <= 30</td>
                                     </tr>
                                     <tr>
                                         <th>Technical Feasibility: Practicality and viability of the solution. (15%)</th>
-                                        <td><input type="text" class="form-control" min="0" max="15" name="criteria3" id="criteria3" required></td>
+                                        <td><input type="number" class="form-control" style="width: 75px;" min="0" max="15" name="criteria3" id="criteria3" required></td>
                                         <td class="text-danger">Max&nbsp;Points <= 15</td>
                                     </tr>
                                     <tr>
                                         <th>Team Skill Set: Balance of technical, domain, and entrepreneurial skills. (15%)</th>
-                                        <td><input type="text" class="form-control" min="0" max="15" name="criteria4" id="criteria4" required></td>
+                                        <td><input type="number" class="form-control" style="width: 75px;" min="0" max="15" name="criteria4" id="criteria4" required></td>
                                         <td class="text-danger">Max&nbsp;Points <= 15</td>
                                     </tr>
                                     <tr>
                                         <th>Prior Hackathon Experience: Experience in rapid prototyping and time constraints. (10%)</th>
-                                        <td><input type="text" class="form-control" min="0" max="10" name="criteria5" id="criteria5" required></td>
+                                        <td><input type="number" class="form-control" style="width: 75px;" min="0" max="10" name="criteria5" id="criteria5" required></td>
                                         <td class="text-danger">Max&nbsp;Points <= 10</td>
                                     </tr>
                                     <tr>
@@ -439,7 +439,7 @@ $participantId = '';
                                     </tr>
                                     <tr>
                                         <td colspan="3">
-                                            <textarea class="form-control" name="comments" id="comments"></textarea>
+                                            <textarea class="form-control" name="comments" id="comments" required placeholder="Review Comments"></textarea>
                                         </td>
                                     </tr>
                                     <tr>
@@ -460,40 +460,70 @@ $participantId = '';
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        var criteria1 = document.getElementById("criteria1");
-        criteria1.addEventListener("blur", function() {
-            if (criteria1.value > 30) {
-                alert("Max points 30");
-            }
-        });
+        function validateForm() {
+            let criteria1 = document.getElementById('criteria1').value;
+            let criteria2 = document.getElementById('criteria2').value;
+            let criteria3 = document.getElementById('criteria3').value;
+            let criteria4 = document.getElementById('criteria4').value;
+            let criteria5 = document.getElementById('criteria5').value;
 
-        var criteria2 = document.getElementById("criteria2");
-        criteria2.addEventListener("blur", function() {
-            if (criteria2.value > 30) {
-                alert("Max points 30");
+            // Check if criteria are within valid ranges
+            if (criteria1 > 30 || criteria1 < 0) {
+                alert("Idea Originality must be between 0 and 30.");
+                return false;
             }
-        });
+            if (criteria2 > 30 || criteria2 < 0) {
+                alert("Problem Relevance must be between 0 and 30.");
+                return false;
+            }
+            if (criteria3 > 15 || criteria3 < 0) {
+                alert("Technical Feasibility must be between 0 and 15.");
+                return false;
+            }
+            if (criteria4 > 15 || criteria4 < 0) {
+                alert("Team Skill Set must be between 0 and 15.");
+                return false;
+            }
+            if (criteria5 > 10 || criteria5 < 0) {
+                alert("Prior Hackathon Experience must be between 0 and 10.");
+                return false;
+            }
+            return true;
+        }
+        // var criteria1 = document.getElementById("criteria1");
+        // criteria1.addEventListener("blur", function() {
+        //     if (criteria1.value > 30) {
+        //         alert("Max points 30");
+        //     }
+        // });
 
-        var criteria3 = document.getElementById("criteria3");
-        criteria3.addEventListener("blur", function() {
-            if (criteria3.value > 15) {
-                alert("Max points 15");
-            }
-        });
+        // var criteria2 = document.getElementById("criteria2");
+        // criteria2.addEventListener("blur", function() {
+        //     if (criteria2.value > 30) {
+        //         alert("Max points 30");
+        //     }
+        // });
 
-        var criteria4 = document.getElementById("criteria4");
-        criteria4.addEventListener("blur", function() {
-            if (criteria4.value > 15) {
-                alert("Max points 15");
-            }
-        });
+        // var criteria3 = document.getElementById("criteria3");
+        // criteria3.addEventListener("blur", function() {
+        //     if (criteria3.value > 15) {
+        //         alert("Max points 15");
+        //     }
+        // });
 
-        var criteria5 = document.getElementById("criteria5");
-        criteria5.addEventListener("blur", function() {
-            if (criteria5.value > 10) {
-                alert("Max points 10");
-            }
-        });
+        // var criteria4 = document.getElementById("criteria4");
+        // criteria4.addEventListener("blur", function() {
+        //     if (criteria4.value > 15) {
+        //         alert("Max points 15");
+        //     }
+        // });
+
+        // var criteria5 = document.getElementById("criteria5");
+        // criteria5.addEventListener("blur", function() {
+        //     if (criteria5.value > 10) {
+        //         alert("Max points 10");
+        //     }
+        // });
     </script>
 </body>
 

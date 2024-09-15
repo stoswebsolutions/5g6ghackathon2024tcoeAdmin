@@ -6,13 +6,25 @@ if (!isset($_SESSION['juryId'])) {
     exit();
 }
 $juryId = $_SESSION['juryId'];
+
+$q1 = "SELECT count(*) AS total_rows1 FROM applicant";
+$res1 = $conn->query($q1);
+if ($res1->num_rows > 0) {
+    $r1 = $res1->fetch_assoc();
+}
+
+$q2 = "SELECT count(*) AS total_rows2 FROM points";
+$res2 = $conn->query($q2);
+if ($res2->num_rows > 0) {
+    $r2 = $res2->fetch_assoc();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
-    <title>Admin</title>
+    <title>Jury</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
@@ -57,7 +69,11 @@ $juryId = $_SESSION['juryId'];
         </div>
     </header>
     <div class="container-fluid">
-        <ul class="nav nav-tabs w-100" id="myTab" role="tablist">
+        <div class="row mt-2">
+            <div class="col-md-6 text-center"><button class="w-75 text-success">Total Number of Applications to be Reviewed: <?= $r1['total_rows1'] - $r2['total_rows2'] ?></button></div>
+            <div class="col-md-6 text-center"><button class="w-75 text-warning">Total Number of Applications Reviewed: <?= $r2['total_rows2'] ?></button></div>
+        </div>
+        <ul class="nav nav-tabs w-100 mt-2" id="myTab" role="tablist">
             <li class="nav-item w-50 text-center" role="presentation">
                 <button class="nav-link active w-100 text-center" id="card-tab" data-bs-toggle="tab" data-bs-target="#card-tab-pane" type="button" role="tab" aria-controls="card-tab-pane" aria-selected="true">Card View</button>
             </li>
@@ -65,11 +81,12 @@ $juryId = $_SESSION['juryId'];
                 <button class="nav-link w-100 text-center" id="list-tab" data-bs-toggle="tab" data-bs-target="#list-tab-pane" type="button" role="tab" aria-controls="list-tab-pane" aria-selected="false">List View</button>
             </li>
         </ul>
+        <button class="btn btn-success mt-2" onclick="downloadApplicantData()">Download Applicant Data</button>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="card-tab-pane" role="tabpanel" aria-labelledby="card-tab" tabindex="0">
                 <div class="row">
                     <?php
-                    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where uniqueId NOT IN(15,426) ORDER BY a.uniqueApplicant IS NULL, p.uniqueApplicant";
+                    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where uniqueId NOT IN(15,426) ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
                     $result = $conn->query($sql);
                     $count = 0;
                     if ($result->num_rows > 0) {
@@ -82,6 +99,7 @@ $juryId = $_SESSION['juryId'];
                             $city = $row['city'];
                             $state = $row['state'];
                             $postalAddress = $row['postalAddress'];
+                            $category = $row['category'];
                             $applying = $row['applying'];
                             $industry = $row['industry'];
                             $problemsStatement = $row['problemsStatement'];
@@ -94,14 +112,16 @@ $juryId = $_SESSION['juryId'];
                     ?>
                             <div class="col-md-6 col-lg-4">
                                 <div class="card <?= $border ?> mt-3" style="min-height: 530px;">
-                                    <div class="card-header text-center"><?= $problemsStatement ?></div>
+                                    <div class="card-header">
+                                        <span class="p-2 shadow <?= $border ?>"><?= $count ?></span> <span class="float-end"><?= $problemsStatement ?></span>
+                                    </div>
                                     <div class="card-body">
                                         <h5><?= $applicantName ?></h5>
                                         <p><strong>Email:</strong> <?= $email ?></p>
                                         <p><strong>Phone:</strong> <?= $contactNumber ?></p>
                                         <p><strong>City:</strong> <?= $city ?></p>
                                         <p><strong>Organization Name:</strong> <?= $organizationName ?></p>
-                                        <p><strong>Apply as:</strong> <?= $applying ?></p>
+                                        <p><strong>I am:</strong> <?= $category ?></p>
                                         <p><strong>Industry Vertical:</strong> <?= $industry ?></p>
                                         <p><strong>Website:</strong> <a href="<?= $website ?>" target="_blank"><?= $website ?></a></p>
                                         <?php
@@ -157,7 +177,7 @@ $juryId = $_SESSION['juryId'];
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Phone</th>
-                                        <th>Apply As</th>
+                                        <th>I am</th>
                                         <th>Industry Vertical</th>
                                         <th>Problem Statement</th>
                                         <th>Action</th>
@@ -165,7 +185,7 @@ $juryId = $_SESSION['juryId'];
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $sql1 = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where uniqueId NOT IN(15,426) ORDER BY a.uniqueApplicant IS NULL, p.uniqueApplicant";
+                                    $sql1 = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where uniqueId NOT IN(15,426) ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
                                     $result1 = $conn->query($sql1);
                                     $count1 = 0;
                                     if ($result1->num_rows > 0) {
@@ -178,6 +198,7 @@ $juryId = $_SESSION['juryId'];
                                             $city = $row1['city'];
                                             $state = $row1['state'];
                                             $postalAddress = $row1['postalAddress'];
+                                            $category = $row1['category'];
                                             $applying = $row1['applying'];
                                             $industry = $row1['industry'];
                                             $problemsStatement = $row1['problemsStatement'];
@@ -193,7 +214,7 @@ $juryId = $_SESSION['juryId'];
                                                 <td><?= $applicantName ?></td>
                                                 <td><?= $email ?></td>
                                                 <td><?= $contactNumber ?></td>
-                                                <td><?= $applying ?></td>
+                                                <td><?= $category ?></td>
                                                 <td><?= $industry ?></td>
                                                 <td><?= $problemsStatement ?></td>
                                                 <td><a href="applicationView.php?ua=<?= $row1['AuniqueApplicant'] ?>" class="btn btn-primary">View Application</a></td>
@@ -223,34 +244,13 @@ $juryId = $_SESSION['juryId'];
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
 
 <script>
-    var table = $("#data-table").DataTable({
-        dom: "Bfrtip",
-        buttons: [{
-            extend: 'excelHtml5',
-            title: 'Application List',
-            exportOptions: {
-                columns: ':visible'
-            }
-        }],
-        orderCellsTop: true,
-        fixedHeader: true,
-        initComplete: function() {
-            var api = this.api();
-            api.columns().eq(0).each(function(colIdx) {
-                var cell = $('.filters th').eq(
-                    $(api.column(colIdx).header()).index()
-                );
-                var title = $(cell).text();
-
-                $('input', cell).on('keyup change', function() {
-                    api
-                        .column(colIdx)
-                        .search(this.value)
-                        .draw();
-                });
-            });
-        }
+    $(document).ready(function() {
+        $('#data-table').DataTable();
     });
+
+    function downloadApplicantData() {
+        window.location.href = 'download_applicant_data.php';
+    }
 </script>
 
 </html>
