@@ -2,7 +2,7 @@
 session_start();
 include '../db_connect.php';
 if (!isset($_SESSION['juryId'])) {
-    header("Location: home");
+    header("Location: ../home");
     exit();
 }
 $juryId = $_SESSION['juryId'];

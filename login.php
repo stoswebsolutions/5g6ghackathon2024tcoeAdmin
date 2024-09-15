@@ -21,9 +21,9 @@ if ($sql->num_rows > 0) {
     // Verify password
     if (password_verify($password, $hashed_password)) {
         // Password is correct, start a session
-        $_SESSION['uniqueId'] = $uniqueId;
+        $_SESSION['adminId'] = $uniqueId;
         echo "<script>alert('Login successful! Welcome,');</script>";
-        echo "<script> window.location.href='application';</script>";
+        echo "<script> window.location.href='admin/application';</script>";
     } else {
         echo "<script>alert('Invalid email or password!');</script>";
         echo "<script> window.location.href='home#authModal';</script>";
