@@ -7,12 +7,24 @@ if (!isset($_SESSION['juryId'])) {
 }
 $juryId = $_SESSION['juryId'];
 
+$sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+if (isset($_POST['problemsStatement']) && isset($_POST['category'])) {
+    $problemsStatement = $_POST['problemsStatement'];
+    $category = $_POST['category'];
+    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.category = '$category' and a.problemsStatement = '$problemsStatement' ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+} else if (isset($_POST['category'])) {
+    $category = $_POST['category'];
+    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.category = '$category' ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+} else if (isset($_POST['problemsStatement'])) {
+    $problemsStatement = $_POST['problemsStatement'];
+    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.problemsStatement = '$problemsStatement' ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+}
+
 $q1 = "SELECT count(*) AS total_rows1 FROM applicant";
 $res1 = $conn->query($q1);
 if ($res1->num_rows > 0) {
     $r1 = $res1->fetch_assoc();
 }
-
 $q2 = "SELECT count(*) AS total_rows2 FROM points";
 $res2 = $conn->query($q2);
 if ($res2->num_rows > 0) {
@@ -69,6 +81,54 @@ if ($res2->num_rows > 0) {
         </div>
     </header>
     <div class="container-fluid">
+        <form action="applications" method="post">
+            <div class="row mt-2">
+                <div class="col-md-6 text-center">
+                    <div class="form-group mb-3">
+                        <select id="problemsStatement" name="problemsStatement" class="form-select">
+                            <option value="" disabled selected>Please select Problems Statement</option>
+                            <option value="5G Enabled Consoles/Devices For Students">5G Enabled Consoles/Devices For Students</option>
+                            <option value="Suo Moto">Suo Moto</option>
+                            <option value="Digital Twin Technology">Digital Twin Technology</option>
+                            <option value="AI-Driven Network Maintenance">AI-Driven Network Maintenance</option>
+                            <option value="All Other areas (Suo Moto)">All Other areas (Suo Moto)</option>
+                            <option value="Emergency Communication Systems">Emergency Communication Systems</option>
+                            <option value="5G Broadcasting">5G Broadcasting</option>
+                            <option value="5G Kiosk">5G Kiosk</option>
+                            <option value="Non-Terrestrial Network (NTN) Communications">Non-Terrestrial Network (NTN) Communications</option>
+                            <option value="Real Time Control Of Advanced Drones">Real Time Control Of Advanced Drones</option>
+                            <option value="Virtual Networking and SDN">Virtual Networking and SDN</option>
+                            <option value="Cyber Security, Quantum communications and security">Cyber Security, Quantum communications and security</option>
+                            <option value="FinTech">FinTech</option>
+                            <option value="Multi-Modal Interactive System">Multi-Modal Interactive System</option>
+                            <option value="5G Enabled Consoles/Devices">5G Enabled Consoles/Devices</option>
+                            <option value="5G O-RAN">5G O-RAN</option>
+                            <option value="Water Management">Water Management</option>
+                            <option value="Environment, Public Safety & Disaster Management">Environment, Public Safety & Disaster Management</option>
+                            <option value="Tourism">Tourism</option>
+                            <option value="Industry 4.0">Industry 4.0</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Automobile/ Transport/Logistics">Automobile/ Transport/Logistics</option>
+                            <option value="Smart Cities">Smart Cities</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="form-group mb-3">
+                        <select id="category" name="category" class="form-select">
+                            <option value="" disabled selected>Please select category</option>
+                            <option value="Student">Student</option>
+                            <option value="Academia (Professor/research scholars)">Academia (Professor/research scholars)</option>
+                            <option value="Startup">Startup</option>
+                            <option value="Corporate professional">Corporate professional</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <button type="submit" class="btn btn-secondary">Search</button>
+                </div>
+            </div>
+        </form>
         <div class="row mt-2">
             <div class="col-md-6 text-center"><button class="w-75 text-success">Total Number of Applications to be Reviewed: <?= $r1['total_rows1'] - $r2['total_rows2'] ?></button></div>
             <div class="col-md-6 text-center"><button class="w-75 text-warning">Total Number of Applications Reviewed: <?= $r2['total_rows2'] ?></button></div>
@@ -86,7 +146,7 @@ if ($res2->num_rows > 0) {
             <div class="tab-pane fade show active" id="card-tab-pane" role="tabpanel" aria-labelledby="card-tab" tabindex="0">
                 <div class="row">
                     <?php
-                    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where uniqueId NOT IN(15,426) ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+                    // $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where uniqueId NOT IN(15,426) ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
                     $result = $conn->query($sql);
                     $count = 0;
                     if ($result->num_rows > 0) {
@@ -185,7 +245,8 @@ if ($res2->num_rows > 0) {
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $sql1 = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where uniqueId NOT IN(15,426) ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+                                    // $sql1 = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where uniqueId NOT IN(15,426) ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+                                    $sql1 = $sql;
                                     $result1 = $conn->query($sql1);
                                     $count1 = 0;
                                     if ($result1->num_rows > 0) {
@@ -234,7 +295,6 @@ if ($res2->num_rows > 0) {
         </div>
     </div>
 </body>
-
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -242,7 +302,6 @@ if ($res2->num_rows > 0) {
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
-
 <script>
     $(document).ready(function() {
         $('#data-table').DataTable();
