@@ -62,7 +62,7 @@ $uniqueId = $_SESSION['adminId'];
                         ?>
                     </select>
                 </div>
-                <div class="col-md-2 offset-md-2"><input type="submit" value="Assign" class="btn btn-warning"></div>
+                <div class="col-md-2 offset-md-2"><input type="submit" value="SUBMIT" class="btn btn-warning"></div>
             </div>
             <div class="table-responsive mt-4">
                 <table id="data-table" class="table table-striped">
@@ -74,7 +74,7 @@ $uniqueId = $_SESSION['adminId'];
                             <th>Category</th>
                             <th>Website</th>
                             <th>City</th>
-                            <th>Assign</th>
+                            <th>Assign/Un Assign</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -116,7 +116,7 @@ $uniqueId = $_SESSION['adminId'];
                                             if ($r2->num_rows > 0) {
                                                 while ($row2 = $r2->fetch_assoc()) {
                                         ?>
-                                                    <span class="text-success"><?= $row2['email'] ?></span>&nbsp;<span class="text-danger">Want&nbsp;to&nbsp;Dismiss&nbsp;?</span>&nbsp;<input type="checkbox" name="uniqueApplicant1[]" id="assigns<?= $count ?>" value="<?= $uniqueApplicant ?>">
+                                                    <span class="text-success"><?= $row2['email'] ?></span>&nbsp;<span class="text-danger">Want&nbsp;to&nbsp;Un&nbsp;Assign&nbsp;?</span>&nbsp;<input type="checkbox" name="uniqueApplicant1[]" id="assigns<?= $count ?>" value="<?= $uniqueApplicant ?>">
                                             <?php
                                                 }
                                             }

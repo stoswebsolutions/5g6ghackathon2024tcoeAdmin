@@ -60,7 +60,8 @@ $uniqueId = $_SESSION['adminId'];
                 </thead>
                 <tbody>
                     <?php
-                    $sql = "SELECT * FROM applicant where status=1 GROUP BY email, problemsStatement";
+                    // $sql = "SELECT * FROM applicant where status=1 GROUP BY email, problemsStatement";
+                    $sql = "SELECT * FROM applicant ORDER BY email, problemsStatement";
                     $stmt = $conn->prepare($sql);
                     $stmt->execute();
                     $result1 = $stmt->get_result();
@@ -79,8 +80,13 @@ $uniqueId = $_SESSION['adminId'];
                             $applying = $row['applying'];
                             $industry = $row['industry'];
                             $website = $row['website'];
+                            if ($row['status'] == 1) {
+                                $border = "border-success";
+                            } else {
+                                $border = "border-danger";
+                            }
                     ?>
-                            <tr>
+                            <tr class="<?= $border ?>">
                                 <td><?= $count ?></td>
                                 <td><?= $applicantName ?><br><small>Phone: <?= $contactNumber ?><br><?= $applying ?></small></td>
                                 <td><?= $email ?></td>

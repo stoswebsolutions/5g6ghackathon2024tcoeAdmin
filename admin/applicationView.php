@@ -54,7 +54,7 @@ $uniqueApplicant = $_GET['ua'];
     <div class="container-fluid">
         <div class="row mt-2">
             <?php
-            $sql = "SELECT a.*, t.*, d.* FROM applicant a  JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant  JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant WHERE a.uniqueApplicant = '$uniqueApplicant' GROUP BY a.email, a.problemsStatement ";
+            $sql = "SELECT a.*, t.*, d.*,a.status AS Astatus FROM applicant a  JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant  JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant WHERE a.uniqueApplicant = '$uniqueApplicant' ";
             $result = $conn->query($sql);
             if ($result->num_rows <= 0) {
             ?>
@@ -81,7 +81,7 @@ $uniqueApplicant = $_GET['ua'];
                                     </button>
                                 </h2>
                                 <div id="collapseOne<?= $row['uniqueApplicant'] ?>"
-                                    class="accordion-collapse collapse show"
+                                    class="accordion-collapse collapse"
                                     aria-labelledby="headingOne<?= $row['uniqueApplicant'] ?>"
                                     data-bs-parent="#applicationAccordion">
                                     <div class="accordion-body">
@@ -334,6 +334,27 @@ $uniqueApplicant = $_GET['ua'];
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="card w-50 mt-5 shadow p-3">
+                            <form action="applicationDisable" method="post">
+                                <input type="hidden" name="uniqueApplicant" id="uniqueApplicant" value="<?= $row['uniqueApplicant'] ?>">
+                                <select name="status" id="status" class="form-select mb-3">
+                                    <?php
+                                    if ($row['Astatus'] == 1) {
+                                    ?>
+                                        <option selected disabled>Status Active</option>
+                                    <?php
+                                    } else {
+                                    ?>
+                                        <option selected disabled>Status DeActive</option>
+                                    <?php
+                                    }
+                                    ?>
+                                    <option value="1">Active</option>
+                                    <option value="3">DeActive</option>
+                                </select>
+                                <input type="submit" value="Submit" class="btn btn-success">
+                            </form>
                         </div>
                     <?php
                     }
