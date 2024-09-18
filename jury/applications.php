@@ -7,17 +7,17 @@ if (!isset($_SESSION['juryId'])) {
 }
 $juryId = $_SESSION['juryId'];
 
-$sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 GROUP BY a.email, a.problemsStatement ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+$sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$juryId' GROUP BY a.email, a.problemsStatement ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
 if (isset($_POST['problemsStatement']) && isset($_POST['category'])) {
     $problemsStatement = $_POST['problemsStatement'];
     $category = $_POST['category'];
-    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.category = '$category' and a.problemsStatement = '$problemsStatement' GROUP BY a.email, a.problemsStatement ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$juryId' and a.category = '$category' and a.problemsStatement = '$problemsStatement' GROUP BY a.email, a.problemsStatement ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
 } else if (isset($_POST['category'])) {
     $category = $_POST['category'];
-    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.category = '$category' GROUP BY a.email, a.problemsStatement ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$juryId' and a.category = '$category' GROUP BY a.email, a.problemsStatement ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
 } else if (isset($_POST['problemsStatement'])) {
     $problemsStatement = $_POST['problemsStatement'];
-    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.problemsStatement = '$problemsStatement' GROUP BY a.email, a.problemsStatement ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$juryId' and a.problemsStatement = '$problemsStatement' GROUP BY a.email, a.problemsStatement ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
 }
 
 $total_rows1 = 0;
@@ -310,7 +310,7 @@ if ($res2->num_rows > 0) {
     });
 
     function downloadApplicantData() {
-        window.location.href = 'download_applicant_data.php?ps=<?= $problemsStatement ?>&c=<?= $category ?>';
+        window.location.href = 'download_applicant_data.php?ps=<?= $problemsStatement ?>&c=<?= $category ?>&ji=<?= $juryId ?>';
     }
 </script>
 

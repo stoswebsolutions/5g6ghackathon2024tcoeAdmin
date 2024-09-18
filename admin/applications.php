@@ -36,6 +36,7 @@ $uniqueId = $_SESSION['adminId'];
                         <li><a class="dropdown-item" href="application">Home</a></li>
                         <li><a class="dropdown-item" href="users">Users</a></li>
                         <li><a class="dropdown-item" href="applications">Applications</a></li>
+                        <li><a class="dropdown-item" href="juryassign">Jury Assign</a></li>
                         <li><a class="dropdown-item" href="../logout">Logout</a></li>
                     </ul>
                 </li>

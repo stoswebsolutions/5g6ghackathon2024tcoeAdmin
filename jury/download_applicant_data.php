@@ -2,6 +2,9 @@
 // Include database connection
 include '../db_connect.php';
 
+if (isset($_GET['ji'])) {
+    $juryId = $_GET['ji'];
+}
 // Set headers to force download as CSV file
 header('Content-Type: text/csv');
 header('Content-Disposition: attachment;filename="applicant_data.csv"');
@@ -65,7 +68,7 @@ $sql = "SELECT fullname,u.mobile,u.email,u.categoryType,u.uniqueId AS UuniqueId,
             LEFT JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant 
             LEFT JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant 
             LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant 
-            WHERE u.role = 'participant' and a.status=1 GROUP BY a.email, a.problemsStatement ORDER BY a.uniqueId IS NULL,u.uniqueId";
+            WHERE u.role = 'participant' and a.status=1 and a.assignedJury = '$juryId' GROUP BY a.email, a.problemsStatement ORDER BY a.uniqueId IS NULL,u.uniqueId";
 if (isset($_GET['ps']) && isset($_GET['c'])) {
     $problemsStatement = $_GET['ps'];
     $category = $_GET['c'];
@@ -77,7 +80,7 @@ if (isset($_GET['ps']) && isset($_GET['c'])) {
             LEFT JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant 
             LEFT JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant 
             LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant 
-            WHERE u.role = 'participant' and a.status=1 and a.category = '$category' and a.problemsStatement = '$problemsStatement' GROUP BY a.email, a.problemsStatement ORDER BY a.uniqueId IS NULL,u.uniqueId";
+            WHERE u.role = 'participant' and a.status=1 and a.assignedJury = '$juryId' and a.category = '$category' and a.problemsStatement = '$problemsStatement' GROUP BY a.email, a.problemsStatement ORDER BY a.uniqueId IS NULL,u.uniqueId";
 } else if (isset($_GET['c'])) {
     $category = $_GET['c'];
     $sql = "SELECT fullname,u.mobile,u.email,u.categoryType,u.uniqueId AS UuniqueId,a.uniqueId AS AuniqueId,a.organizationName,a.city,a.state,a.postalAddress,a.category,a.applying,a.industry,a.otherindustry,a.problemsStatement,a.applicationVerticals,a.website,
@@ -88,7 +91,7 @@ if (isset($_GET['ps']) && isset($_GET['c'])) {
             LEFT JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant 
             LEFT JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant 
             LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant 
-            WHERE u.role = 'participant' and a.status=1 and a.category = '$category' GROUP BY a.email, a.problemsStatement ORDER BY a.uniqueId IS NULL,u.uniqueId";
+            WHERE u.role = 'participant' and a.status=1 and a.assignedJury = '$juryId' and a.category = '$category' GROUP BY a.email, a.problemsStatement ORDER BY a.uniqueId IS NULL,u.uniqueId";
 } else if (isset($_GET['ps'])) {
     $problemsStatement = $_GET['ps'];
     $sql = "SELECT fullname,u.mobile,u.email,u.categoryType,u.uniqueId AS UuniqueId,a.uniqueId AS AuniqueId,a.organizationName,a.city,a.state,a.postalAddress,a.category,a.applying,a.industry,a.otherindustry,a.problemsStatement,a.applicationVerticals,a.website,
@@ -99,7 +102,7 @@ if (isset($_GET['ps']) && isset($_GET['c'])) {
             LEFT JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant 
             LEFT JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant 
             LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant 
-            WHERE u.role = 'participant' and a.status=1 and a.problemsStatement = '$problemsStatement' GROUP BY a.email, a.problemsStatement ORDER BY a.uniqueId IS NULL,u.uniqueId";
+            WHERE u.role = 'participant' and a.status=1 and a.assignedJury = '$juryId' and a.problemsStatement = '$problemsStatement' GROUP BY a.email, a.problemsStatement ORDER BY a.uniqueId IS NULL,u.uniqueId";
 }
 
 $result = $conn->query($sql);
