@@ -73,7 +73,7 @@ $uniqueId = $_SESSION['uniqueId'];
                     $categoryName = '';
                     $status1 = "Completed";
                     $status2 = "Completed";
-                    $sql = "SELECT u.*,u.uniqueId AS UuniqueId, a.uniqueId AS AuniqueId FROM users u LEFT JOIN applicant a ON  u.uniqueId = a.uniqueId WHERE u.role = 'participant' ORDER BY a.uniqueId IS NULL,u.uniqueId";
+                    $sql = "SELECT u.*,u.uniqueId AS UuniqueId, a.uniqueId AS AuniqueId FROM users u LEFT JOIN applicant a ON  u.uniqueId = a.uniqueId WHERE u.role = 'participant' and a.status=1 GROUP BY a.email, a.problemsStatement ORDER BY a.uniqueId IS NULL,u.uniqueId";
                     $result = $conn->query($sql);
                     if ($result->num_rows > 0) {
                         $status2 = "Completed";

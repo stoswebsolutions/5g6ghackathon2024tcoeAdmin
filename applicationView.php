@@ -49,7 +49,7 @@ $uniqueId = $_GET['uniqueId'];
         <div class="row justify-content-center">
             <?php
             // SQL query to join all three tables based on 'uniqueApplicant'
-            $sql = "SELECT a.*, t.*, d.* FROM applicant a  JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant  JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant WHERE a.uniqueId = '$uniqueId'";
+            $sql = "SELECT a.*, t.*, d.* FROM applicant a  JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant  JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant WHERE a.uniqueId = '$uniqueId' and a.status=1";
             // Execute the query
             $result = $conn->query($sql);
             ?>

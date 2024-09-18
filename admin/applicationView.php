@@ -53,7 +53,7 @@ $uniqueApplicant = $_GET['ua'];
     <div class="container-fluid">
         <div class="row mt-2">
             <?php
-            $sql = "SELECT a.*, t.*, d.* FROM applicant a  JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant  JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant WHERE a.uniqueApplicant = '$uniqueApplicant'";
+            $sql = "SELECT a.*, t.*, d.* FROM applicant a  JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant  JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant WHERE a.uniqueApplicant = '$uniqueApplicant' GROUP BY a.email, a.problemsStatement ";
             $result = $conn->query($sql);
             if ($result->num_rows <= 0) {
             ?>

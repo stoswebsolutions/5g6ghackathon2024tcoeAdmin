@@ -65,13 +65,49 @@ $sql = "SELECT fullname,u.mobile,u.email,u.categoryType,u.uniqueId AS UuniqueId,
             LEFT JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant 
             LEFT JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant 
             LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant 
-            WHERE u.role = 'participant' and u.uniqueId NOT IN(15,426) GROUP BY u.email ORDER BY a.uniqueId IS NULL,u.uniqueId";
+            WHERE u.role = 'participant' and a.status=1 GROUP BY a.email, a.problemsStatement ORDER BY a.uniqueId IS NULL,u.uniqueId";
+if (isset($_GET['ps']) && isset($_GET['c'])) {
+    $problemsStatement = $_GET['ps'];
+    $category = $_GET['c'];
+    $sql = "SELECT fullname,u.mobile,u.email,u.categoryType,u.uniqueId AS UuniqueId,a.uniqueId AS AuniqueId,a.organizationName,a.city,a.state,a.postalAddress,a.category,a.applying,a.industry,a.otherindustry,a.problemsStatement,a.applicationVerticals,a.website,
+            t.domain, t.product, t.productFile,t.presentationVideo, t.presentationURL, t.technologyLevel,t.proofPoC, t.describeProduct, t.productPatent,t.patentDetails, t.similarProduct, t.similarProductFile,
+            d.shareholding, d.incorporation, d.idProof,a.createAt,
+            p.juryId, p.criteria1, p.criteria2, p.criteria3, p.criteria4, p.criteria5, p.totalPoints, p.status, p.comments FROM users u 
+            LEFT JOIN applicant a ON  u.uniqueId = a.uniqueId 
+            LEFT JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant 
+            LEFT JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant 
+            LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant 
+            WHERE u.role = 'participant' and a.status=1 and a.category = '$category' and a.problemsStatement = '$problemsStatement' GROUP BY a.email, a.problemsStatement ORDER BY a.uniqueId IS NULL,u.uniqueId";
+} else if (isset($_GET['c'])) {
+    $category = $_GET['c'];
+    $sql = "SELECT fullname,u.mobile,u.email,u.categoryType,u.uniqueId AS UuniqueId,a.uniqueId AS AuniqueId,a.organizationName,a.city,a.state,a.postalAddress,a.category,a.applying,a.industry,a.otherindustry,a.problemsStatement,a.applicationVerticals,a.website,
+            t.domain, t.product, t.productFile,t.presentationVideo, t.presentationURL, t.technologyLevel,t.proofPoC, t.describeProduct, t.productPatent,t.patentDetails, t.similarProduct, t.similarProductFile,
+            d.shareholding, d.incorporation, d.idProof,a.createAt,
+            p.juryId, p.criteria1, p.criteria2, p.criteria3, p.criteria4, p.criteria5, p.totalPoints, p.status, p.comments FROM users u 
+            LEFT JOIN applicant a ON  u.uniqueId = a.uniqueId 
+            LEFT JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant 
+            LEFT JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant 
+            LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant 
+            WHERE u.role = 'participant' and a.status=1 and a.category = '$category' GROUP BY a.email, a.problemsStatement ORDER BY a.uniqueId IS NULL,u.uniqueId";
+} else if (isset($_GET['ps'])) {
+    $problemsStatement = $_GET['ps'];
+    $sql = "SELECT fullname,u.mobile,u.email,u.categoryType,u.uniqueId AS UuniqueId,a.uniqueId AS AuniqueId,a.organizationName,a.city,a.state,a.postalAddress,a.category,a.applying,a.industry,a.otherindustry,a.problemsStatement,a.applicationVerticals,a.website,
+            t.domain, t.product, t.productFile,t.presentationVideo, t.presentationURL, t.technologyLevel,t.proofPoC, t.describeProduct, t.productPatent,t.patentDetails, t.similarProduct, t.similarProductFile,
+            d.shareholding, d.incorporation, d.idProof,a.createAt,
+            p.juryId, p.criteria1, p.criteria2, p.criteria3, p.criteria4, p.criteria5, p.totalPoints, p.status, p.comments FROM users u 
+            LEFT JOIN applicant a ON  u.uniqueId = a.uniqueId 
+            LEFT JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant 
+            LEFT JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant 
+            LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant 
+            WHERE u.role = 'participant' and a.status=1 and a.problemsStatement = '$problemsStatement' GROUP BY a.email, a.problemsStatement ORDER BY a.uniqueId IS NULL,u.uniqueId";
+}
 
 $result = $conn->query($sql);
 
 // Output each row of data as CSV
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
+        $row['mobile'] = '' . $row['mobile'];
         $juryId = $row['juryId'];
         $q1 = "SELECT * FROM users where uniqueId ='$juryId' ";
         $res1 = $conn->query($q1);
@@ -108,7 +144,6 @@ if ($result->num_rows > 0) {
         $row['shareholding'] = !empty($row['shareholding']) ? '=HYPERLINK("' . $base_url . $row['shareholding'] . '", "Click Here Shareholding")' : '';
         $row['incorporation'] = !empty($row['incorporation']) ? '=HYPERLINK("' . $base_url . $row['incorporation'] . '", "Click Here Incorporation Certificate")' : '';
         $row['idProof'] = !empty($row['idProof']) ? '=HYPERLINK("' . $base_url . $row['idProof'] . '", "Click Here ID Proof")' : '';
-        
         fputcsv($output, $row);
     }
 }

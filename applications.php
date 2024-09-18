@@ -62,7 +62,7 @@ $uniqueId = $_SESSION['uniqueId'];
             <div class="tab-pane fade show active" id="card-tab-pane" role="tabpanel" aria-labelledby="card-tab" tabindex="0">
                 <div class="row">
                     <?php
-                    $sql = "SELECT * FROM applicant where uniqueId NOT IN(15,426)";
+                    $sql = "SELECT * FROM applicant where status=1 GROUP BY email, problemsStatement";
                     $stmt = $conn->prepare($sql);
                     $stmt->execute();
                     $result = $stmt->get_result();
@@ -129,7 +129,7 @@ $uniqueId = $_SESSION['uniqueId'];
                         </thead>
                         <tbody>
                             <?php
-                            $sql = "SELECT * FROM applicant ";
+                            $sql = "SELECT * FROM applicant where status=1 GROUP BY email,problemsStatement";
                             $stmt = $conn->prepare($sql);
                             $stmt->execute();
                             $result1 = $stmt->get_result();

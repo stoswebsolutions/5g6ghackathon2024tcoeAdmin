@@ -59,7 +59,7 @@ $uniqueId = $_SESSION['adminId'];
                 </thead>
                 <tbody>
                     <?php
-                    $sql = "SELECT * FROM applicant ";
+                    $sql = "SELECT * FROM applicant where status=1 GROUP BY email, problemsStatement";
                     $stmt = $conn->prepare($sql);
                     $stmt->execute();
                     $result1 = $stmt->get_result();
