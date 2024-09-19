@@ -8,18 +8,34 @@ if (!isset($_SESSION['tecUnique'])) {
 $tecUnique = $_SESSION['tecUnique'];
 $tecGroup = $_SESSION['tecGroup'];
 
-$sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$tecGroup' ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
-if (isset($_POST['problemsStatement']) && isset($_POST['category'])) {
-    $problemsStatement = $_POST['problemsStatement'];
-    $category = $_POST['category'];
-    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$tecGroup'  and a.category = '$category' and a.problemsStatement = '$problemsStatement' ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
-} else if (isset($_POST['category'])) {
-    $category = $_POST['category'];
-    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$tecGroup'  and a.category = '$category' ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
-} else if (isset($_POST['problemsStatement'])) {
-    $problemsStatement = $_POST['problemsStatement'];
-    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$tecGroup'  and a.problemsStatement = '$problemsStatement' ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
-}
+$sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, 
+p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt, t.tecUnique as TtecUnique
+FROM  applicant as a join tecDetails as t on a.assignedJury=t.tecGroup  LEFT JOIN points as p on a.uniqueApplicant = p.uniqueApplicant and t.tecUnique=p.tecUnique 
+where a.assignedJury='$tecGroup' and t.tecUnique = '$tecUnique' ";
+
+// if (isset($_POST['problemsStatement']) && isset($_POST['category']) && !empty($_POST['problemsStatement']) && !empty($_POST['category'])) {
+//     $problemsStatement = $_POST['problemsStatement'];
+//     $category = $_POST['category'];
+//     $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant as a LEFT JOIN points as p on a.uniqueApplicant = p.uniqueApplicant where a.problemsStatement = '$problemsStatement' and a.category = '$category' and a.assignedJury = '$tecGroup' and IFNULL(p.tecUnique,$tecUnique) = $tecUnique";
+// } else if (isset($_POST['problemsStatement']) && !empty($_POST['problemsStatement'])) {
+//     $problemsStatement = $_POST['problemsStatement'];
+//     $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant as a LEFT JOIN points as p on a.uniqueApplicant = p.uniqueApplicant where a.problemsStatement = '$problemsStatement' and a.assignedJury = '$tecGroup' and IFNULL(p.tecUnique,$tecUnique) = $tecUnique";
+// } else if (isset($_POST['category']) && !empty($_POST['category'])) {
+//     $category = $_POST['category'];
+//     $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant as a LEFT JOIN points as p on a.uniqueApplicant = p.uniqueApplicant where a.category = '$category' and a.assignedJury = '$tecGroup' and IFNULL(p.tecUnique,$tecUnique) = $tecUnique";
+// }
+
+// if (isset($_POST['problemsStatement']) && isset($_POST['category'])) {
+//     $problemsStatement = $_POST['problemsStatement'];
+//     $category = $_POST['category'];
+//     $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$tecGroup'  and a.category = '$category' and a.problemsStatement = '$problemsStatement' ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+// } else if (isset($_POST['category'])) {
+//     $category = $_POST['category'];
+//     $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$tecGroup'  and a.category = '$category' ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+// } else if (isset($_POST['problemsStatement'])) {
+//     $problemsStatement = $_POST['problemsStatement'];
+//     $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$tecGroup'  and a.problemsStatement = '$problemsStatement' ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+// }
 
 $total_rows1 = 0;
 $q1 = "SELECT * FROM applicant where status=1";
@@ -69,6 +85,7 @@ if ($res2->num_rows > 0) {
             <a class="navbar-brand" href="participant">
                 <img src="../assets/images/Tcoe_logo.jpg" alt="Logo" width="80" height="50" />
             </a>
+            <p><span class="text-danger">Welcome - </span><?= $_SESSION['emailId'] ?></p>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="listDropdown" role="button"
@@ -89,7 +106,7 @@ if ($res2->num_rows > 0) {
                 <div class="col-md-6 text-center">
                     <div class="form-group mb-3">
                         <select id="problemsStatement" name="problemsStatement" class="form-select">
-                            <option value="" disabled <?= empty($problemsStatement) ? 'selected' : '' ?>>Please select Problems Statement</option>
+                            <option value="">Please select Problems Statement</option>
                             <option value="5G Enabled Consoles/Devices For Students" <?= $problemsStatement === "5G Enabled Consoles/Devices For Students" ? 'selected' : '' ?>>5G Enabled Consoles/Devices For Students</option>
                             <option value="Suo Moto" <?= $problemsStatement === "Suo Moto" ? 'selected' : '' ?>>Suo Moto</option>
                             <option value="Digital Twin Technology" <?= $problemsStatement === "Digital Twin Technology" ? 'selected' : '' ?>>Digital Twin Technology</option>
@@ -119,7 +136,7 @@ if ($res2->num_rows > 0) {
                 <div class="col-md-3 text-center">
                     <div class="form-group mb-3">
                         <select id="category" name="category" class="form-select">
-                            <option value="" disabled <?= empty($category) ? 'selected' : '' ?>>Please select category</option>
+                            <option value="">Please select category</option>
                             <option value="Student" <?= $category === "Student" ? 'selected' : '' ?>>Student</option>
                             <option value="Academia (Professor/research scholars)" <?= $category === "Academia (Professor/research scholars)" ? 'selected' : '' ?>>Academia (Professor/research scholars)</option>
                             <option value="Startup" <?= $category === "Startup" ? 'selected' : '' ?>>Startup</option>
@@ -136,14 +153,14 @@ if ($res2->num_rows > 0) {
             <div class="col-md-6 text-center"><button class="w-75 text-success">Total Number of Applications to be Reviewed: <?= $total_rows1 - $total_rows2 ?></button></div>
             <div class="col-md-6 text-center"><button class="w-75 text-warning">Total Number of Applications Reviewed: <?= $total_rows2 ?></button></div>
         </div>
-        <ul class="nav nav-tabs w-100 mt-2" id="myTab" role="tablist">
+        <!-- <ul class="nav nav-tabs w-100 mt-2" id="myTab" role="tablist">
             <li class="nav-item w-50 text-center" role="presentation">
                 <button class="nav-link active w-100 text-center" id="card-tab" data-bs-toggle="tab" data-bs-target="#card-tab-pane" type="button" role="tab" aria-controls="card-tab-pane" aria-selected="true">Card View</button>
             </li>
             <li class="nav-item w-50 text-center" role="presentation">
                 <button class="nav-link w-100 text-center" id="list-tab" data-bs-toggle="tab" data-bs-target="#list-tab-pane" type="button" role="tab" aria-controls="list-tab-pane" aria-selected="false">List View</button>
             </li>
-        </ul>
+        </ul> -->
         <button class="btn btn-success mt-2" onclick="downloadApplicantData()">Download Applicant Data</button>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="card-tab-pane" role="tabpanel" aria-labelledby="card-tab" tabindex="0">
