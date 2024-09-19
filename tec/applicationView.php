@@ -37,6 +37,7 @@ $participantId = '';
                 <img src="../assets/images/Tcoe_logo.jpg" alt="Logo" width="80" height="50" />
             </a>
             <ul class="navbar-nav ms-auto">
+            <li><a class="" href="applications">Home</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="listDropdown" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">

@@ -61,7 +61,6 @@ $uniqueId = $_SESSION['adminId'];
                         <th>Member -2</th>
                         <th>Member -3</th>
                         <th>Member -4</th>
-                        <th>Member -4</th>
                         <th>Hold</th>
                         <th>Accepted</th>
                         <th>Rejected</th>

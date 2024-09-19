@@ -11,6 +11,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ((isset($_POST['uniqueApplicant']) || isset($_POST['uniqueApplicant'])) && (!empty($_POST['uniqueApplicant']) || !empty($_POST['uniqueApplicant']))) {
         $tecGroup = $_POST['tecGroup'];
         $uniqueApplicants = $_POST['uniqueApplicant'];
+        ?>
+        <script>
+            alert($uniqueApplicants);
+        </script>
+        <?php
         $uniqueApplicants1 = $_POST['uniqueApplicant1'];
         $complete1 = [];
         $complete2 = [];
@@ -29,7 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $complete3[] = $uniqueApplicant1;
             }
         }
-        header("Location: tecassign");
     } else {
         $sql = "SELECT * FROM applicant where status=1 ORDER BY (assignedJury = 'N/A') DESC, assignedJury";
         if (isset($_POST['problemsStatement']) && isset($_POST['category']) && !empty($_POST['problemsStatement']) && !empty($_POST['category'])) {
@@ -152,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <th>Category</th>
                             <th>Website</th>
                             <th>City</th>
-                            <th>Assign/Un Assign</th>
+                            <th>Assign</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -183,7 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <td><?= $email ?></td>
                                     <td><?= $category ?></td>
                                     <td>TCOE India<br><small><?= $website ?></small></td>
-                                    <td><?= $city ?>-<?= $state ?>-<?= $row['assignedJury'] ?></td>
+                                    <td><?= $city ?>-<?= $state ?></td>
                                     <td>
                                         <?php
                                         if ($row['assignedJury'] != 'N/A') {
@@ -194,7 +198,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                 while ($row2 = $r2->fetch_assoc()) {
                                         ?>
                                                     <input type="checkbox" name="uniqueApplicant[]" id="assign<?= $count ?>" value="<?= $uniqueApplicant ?>" checked disabled>
-                                                    <span class="text-success"><?= $row2['tecGroup'] ?></span><br><span class="text-danger">Want&nbsp;to&nbsp;Un&nbsp;Assign&nbsp;?</span>&nbsp;<input type="checkbox" name="uniqueApplicant1[]" id="assigns<?= $count ?>" value="<?= $uniqueApplicant ?>">
+                                                    <span class="text-success"><?= $row2['tecGroup'] ?></span>
+                                                    <!-- <br><span class="text-danger">Want&nbsp;to&nbsp;Un&nbsp;Assign&nbsp;?</span>&nbsp;<input type="checkbox" name="uniqueApplicant1[]" id="assigns<?= $count ?>" value="<?= $uniqueApplicant ?>"> -->
                                             <?php
                                                 }
                                             }
@@ -229,7 +234,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('#data-table').DataTable();
+        $('#data-table').DataTable({
+            stateSave: true,
+        });
     });
     // var table = $("#data-table").DataTable({
     //     dom: "Bfrtip",

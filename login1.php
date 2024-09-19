@@ -9,13 +9,13 @@ $email = $_POST['email'];
 $password = $_POST['password'];
 
 // Prepare SQL statement to prevent SQL injection
-$sql = $conn->prepare("SELECT tecUnique, password, tecGroup FROM tecDetails WHERE emailId = ? and status=1 ");
+$sql = $conn->prepare("SELECT tecUnique, password, tecGroup,emailId FROM tecDetails WHERE emailId = ? and status=1 ");
 $sql->bind_param("s", $email);
 $sql->execute();
 $sql->store_result();
 
 if ($sql->num_rows > 0) {
-    $sql->bind_result($tecUnique, $hashed_password, $tecGroup);
+    $sql->bind_result($tecUnique, $hashed_password, $tecGroup, $emailId);
     $sql->fetch();
 
     // Verify password
@@ -23,6 +23,7 @@ if ($sql->num_rows > 0) {
         // Password is correct, start a session
         $_SESSION['tecUnique'] = $tecUnique;
         $_SESSION['tecGroup'] = $tecGroup;
+        $_SESSION['emailId'] = $emailId;
         echo "<script>alert('Login successful! Welcome,');</script>";
         echo "<script> window.location.href='tec/applications';</script>";
     } else {
