@@ -13,17 +13,26 @@ p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt, t.tecUnique as Tte
 FROM  applicant as a join tecDetails as t on a.assignedJury=t.tecGroup  LEFT JOIN points as p on a.uniqueApplicant = p.uniqueApplicant and t.tecUnique=p.tecUnique 
 where a.assignedJury='$tecGroup' and t.tecUnique = '$tecUnique' ";
 
-// if (isset($_POST['problemsStatement']) && isset($_POST['category']) && !empty($_POST['problemsStatement']) && !empty($_POST['category'])) {
-//     $problemsStatement = $_POST['problemsStatement'];
-//     $category = $_POST['category'];
-//     $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant as a LEFT JOIN points as p on a.uniqueApplicant = p.uniqueApplicant where a.problemsStatement = '$problemsStatement' and a.category = '$category' and a.assignedJury = '$tecGroup' and IFNULL(p.tecUnique,$tecUnique) = $tecUnique";
-// } else if (isset($_POST['problemsStatement']) && !empty($_POST['problemsStatement'])) {
-//     $problemsStatement = $_POST['problemsStatement'];
-//     $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant as a LEFT JOIN points as p on a.uniqueApplicant = p.uniqueApplicant where a.problemsStatement = '$problemsStatement' and a.assignedJury = '$tecGroup' and IFNULL(p.tecUnique,$tecUnique) = $tecUnique";
-// } else if (isset($_POST['category']) && !empty($_POST['category'])) {
-//     $category = $_POST['category'];
-//     $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant as a LEFT JOIN points as p on a.uniqueApplicant = p.uniqueApplicant where a.category = '$category' and a.assignedJury = '$tecGroup' and IFNULL(p.tecUnique,$tecUnique) = $tecUnique";
-// }
+if (isset($_POST['problemsStatement']) && isset($_POST['category']) && !empty($_POST['problemsStatement']) && !empty($_POST['category'])) {
+    $problemsStatement = $_POST['problemsStatement'];
+    $category = $_POST['category'];
+    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, 
+    p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt, t.tecUnique as TtecUnique
+    FROM  applicant as a join tecDetails as t on a.assignedJury=t.tecGroup  LEFT JOIN points as p on a.uniqueApplicant = p.uniqueApplicant and t.tecUnique=p.tecUnique 
+    where a.assignedJury='$tecGroup' and t.tecUnique = '$tecUnique' and a.category = '$category' and a.problemsStatement = '$problemsStatement' ";
+} else if (isset($_POST['problemsStatement']) && !empty($_POST['problemsStatement'])) {
+    $problemsStatement = $_POST['problemsStatement'];
+    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, 
+    p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt, t.tecUnique as TtecUnique
+    FROM  applicant as a join tecDetails as t on a.assignedJury=t.tecGroup  LEFT JOIN points as p on a.uniqueApplicant = p.uniqueApplicant and t.tecUnique=p.tecUnique 
+    where a.assignedJury='$tecGroup' and t.tecUnique = '$tecUnique' and a.problemsStatement = '$problemsStatement' ";
+} else if (isset($_POST['category']) && !empty($_POST['category'])) {
+    $category = $_POST['category'];
+    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, 
+    p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt, t.tecUnique as TtecUnique
+    FROM  applicant as a join tecDetails as t on a.assignedJury=t.tecGroup  LEFT JOIN points as p on a.uniqueApplicant = p.uniqueApplicant and t.tecUnique=p.tecUnique 
+    where a.assignedJury='$tecGroup' and t.tecUnique = '$tecUnique' and a.category = '$category' ";
+}
 
 // if (isset($_POST['problemsStatement']) && isset($_POST['category'])) {
 //     $problemsStatement = $_POST['problemsStatement'];
