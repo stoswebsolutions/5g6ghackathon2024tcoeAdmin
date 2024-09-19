@@ -1,33 +1,34 @@
 <?php
 session_start();
 include '../db_connect.php';
-if (!isset($_SESSION['juryId'])) {
+if (!isset($_SESSION['tecUnique'])) {
     header("Location: ../home");
     exit();
 }
-$juryId = $_SESSION['juryId'];
+$tecUnique = $_SESSION['tecUnique'];
+$tecGroup = $_SESSION['tecGroup'];
 
-$sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$juryId' GROUP BY a.email, a.problemsStatement ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+$sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$tecGroup' ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
 if (isset($_POST['problemsStatement']) && isset($_POST['category'])) {
     $problemsStatement = $_POST['problemsStatement'];
     $category = $_POST['category'];
-    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$juryId' and a.category = '$category' and a.problemsStatement = '$problemsStatement' GROUP BY a.email, a.problemsStatement ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$tecGroup'  and a.category = '$category' and a.problemsStatement = '$problemsStatement' ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
 } else if (isset($_POST['category'])) {
     $category = $_POST['category'];
-    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$juryId' and a.category = '$category' GROUP BY a.email, a.problemsStatement ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$tecGroup'  and a.category = '$category' ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
 } else if (isset($_POST['problemsStatement'])) {
     $problemsStatement = $_POST['problemsStatement'];
-    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$juryId' and a.problemsStatement = '$problemsStatement' GROUP BY a.email, a.problemsStatement ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
+    $sql = "SELECT a.*, a.uniqueApplicant AS AuniqueApplicant, a.status AS applicantStatus, a.createAt AS applicantCreatedAt, p.*, p.status AS pointsStatus, p.createAt AS pointsCreatedAt FROM applicant a LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant where a.status=1 and a.assignedJury = '$tecGroup'  and a.problemsStatement = '$problemsStatement' ORDER BY FIELD(a.category, 'Startup') DESC, a.uniqueApplicant IS NULL, p.uniqueApplicant";
 }
 
 $total_rows1 = 0;
-$q1 = "SELECT * FROM applicant where status=1 GROUP BY email, problemsStatement";
+$q1 = "SELECT * FROM applicant where status=1";
 $res1 = $conn->query($q1);
 if ($res1->num_rows > 0) {
     $total_rows1 = $res1->num_rows;
 }
 $total_rows2 = 0;
-$q2 = "SELECT * FROM points";
+$q2 = "SELECT * FROM points GROUP BY uniqueApplicant";
 $res2 = $conn->query($q2);
 if ($res2->num_rows > 0) {
     $total_rows2 = $res2->num_rows;
@@ -38,7 +39,7 @@ if ($res2->num_rows > 0) {
 
 <head>
     <meta charset="UTF-8" />
-    <title>Jury</title>
+    <title>Tec</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
@@ -161,10 +162,10 @@ if ($res2->num_rows > 0) {
                             $city = $row['city'];
                             $state = $row['state'];
                             $postalAddress = $row['postalAddress'];
-                            $category = $row['category'];
+                            $category1 = $row['category'];
                             $applying = $row['applying'];
                             $industry = $row['industry'];
-                            $problemsStatement = $row['problemsStatement'];
+                            $problemsStatement1 = $row['problemsStatement'];
                             $website = $row['website'];
                             if ($row['pointsId'] == "") {
                                 $border = "border-danger";
@@ -175,7 +176,7 @@ if ($res2->num_rows > 0) {
                             <div class="col-md-6 col-lg-4">
                                 <div class="card <?= $border ?> mt-3" style="min-height: 530px;">
                                     <div class="card-header">
-                                        <span class="p-2 shadow <?= $border ?>"><?= $count ?></span> <span class="float-end"><?= $problemsStatement ?></span>
+                                        <span class="p-2 shadow <?= $border ?>"><?= $count ?></span> <span class="float-end"><?= $problemsStatement1 ?></span>
                                     </div>
                                     <div class="card-body">
                                         <h5><?= $applicantName ?></h5>
@@ -183,7 +184,7 @@ if ($res2->num_rows > 0) {
                                         <p><strong>Phone:</strong> <?= $contactNumber ?></p>
                                         <p><strong>City:</strong> <?= $city ?></p>
                                         <p><strong>Organization Name:</strong> <?= $organizationName ?></p>
-                                        <p><strong>I am:</strong> <?= $category ?></p>
+                                        <p><strong>I am:</strong> <?= $category1 ?></p>
                                         <p><strong>Industry Vertical:</strong> <?= $industry ?></p>
                                         <p><strong>Website:</strong> <a href="<?= $website ?>" target="_blank"><?= $website ?></a></p>
                                         <?php
@@ -261,10 +262,10 @@ if ($res2->num_rows > 0) {
                                             $city = $row1['city'];
                                             $state = $row1['state'];
                                             $postalAddress = $row1['postalAddress'];
-                                            $category = $row1['category'];
+                                            $category1 = $row1['category'];
                                             $applying = $row1['applying'];
                                             $industry = $row1['industry'];
-                                            $problemsStatement = $row1['problemsStatement'];
+                                            $problemsStatement1 = $row1['problemsStatement'];
                                             $website = $row1['website'];
                                             if ($row1['pointsId'] == "") {
                                                 $border = "border-danger";
@@ -277,9 +278,9 @@ if ($res2->num_rows > 0) {
                                                 <td><?= $applicantName ?></td>
                                                 <td><?= $email ?></td>
                                                 <td><?= $contactNumber ?></td>
-                                                <td><?= $category ?></td>
+                                                <td><?= $category1 ?></td>
                                                 <td><?= $industry ?></td>
-                                                <td><?= $problemsStatement ?></td>
+                                                <td><?= $problemsStatement1 ?></td>
                                                 <td><a href="applicationView.php?ua=<?= $row1['AuniqueApplicant'] ?>" class="btn btn-primary">View Application</a></td>
                                             </tr>
                                     <?php
@@ -310,7 +311,7 @@ if ($res2->num_rows > 0) {
     });
 
     function downloadApplicantData() {
-        window.location.href = 'download_applicant_data.php?ps=<?= $problemsStatement ?>&c=<?= $category ?>&ji=<?= $juryId ?>';
+        window.location.href = 'download_applicant_data.php?ps=<?= $problemsStatement ?>&c=<?= $category ?>&tu=<?= $tecUnique ?>&tg=<?= $tecGroup ?>';
     }
 </script>
 

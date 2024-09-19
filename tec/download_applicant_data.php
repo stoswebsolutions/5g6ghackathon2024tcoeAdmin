@@ -2,8 +2,9 @@
 // Include database connection
 include '../db_connect.php';
 
-if (isset($_GET['ji'])) {
-    $juryId = $_GET['ji'];
+if (isset($_GET['tu'])) {
+    $tecUnique = $_GET['tu'];
+    $tecGroup = $_GET['tg'];
 }
 // Set headers to force download as CSV file
 header('Content-Type: text/csv');
@@ -45,7 +46,7 @@ fputcsv($output, array(
     'Incorporation Certificate',
     'ID Proof/ Passport',
     'create Date',
-    'Jury Name',
+    'Tec Name',
     'Criteria 1',
     'Criteria 2',
     'Criteria 3',
@@ -63,46 +64,46 @@ $base_url = 'https://5g6g-hackathon2024.tcoe.in/';
 $sql = "SELECT fullname,u.mobile,u.email,u.categoryType,u.uniqueId AS UuniqueId,a.uniqueId AS AuniqueId,a.organizationName,a.city,a.state,a.postalAddress,a.category,a.applying,a.industry,a.otherindustry,a.problemsStatement,a.applicationVerticals,a.website,
             t.domain, t.product, t.productFile,t.presentationVideo, t.presentationURL, t.technologyLevel,t.proofPoC, t.describeProduct, t.productPatent,t.patentDetails, t.similarProduct, t.similarProductFile,
             d.shareholding, d.incorporation, d.idProof,a.createAt,
-            p.juryId, p.criteria1, p.criteria2, p.criteria3, p.criteria4, p.criteria5, p.totalPoints, p.status, p.comments FROM users u 
+            p.tecUnique, p.criteria1, p.criteria2, p.criteria3, p.criteria4, p.criteria5, p.totalPoints, p.status, p.comments FROM users u 
             LEFT JOIN applicant a ON  u.uniqueId = a.uniqueId 
             LEFT JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant 
             LEFT JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant 
             LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant 
-            WHERE u.role = 'participant' and a.status=1 and a.assignedJury = '$juryId' GROUP BY a.email, a.problemsStatement ORDER BY a.uniqueId IS NULL,u.uniqueId";
-if (isset($_GET['ps']) && isset($_GET['c'])) {
+            WHERE u.role = 'participant' and a.status=1 and a.assignedJury = '$tecGroup' ORDER BY a.uniqueId IS NULL,u.uniqueId";
+if (isset($_GET['ps']) && isset($_GET['c']) && !empty($_GET['ps']) && !empty($_GET['c'])) {
     $problemsStatement = $_GET['ps'];
     $category = $_GET['c'];
     $sql = "SELECT fullname,u.mobile,u.email,u.categoryType,u.uniqueId AS UuniqueId,a.uniqueId AS AuniqueId,a.organizationName,a.city,a.state,a.postalAddress,a.category,a.applying,a.industry,a.otherindustry,a.problemsStatement,a.applicationVerticals,a.website,
             t.domain, t.product, t.productFile,t.presentationVideo, t.presentationURL, t.technologyLevel,t.proofPoC, t.describeProduct, t.productPatent,t.patentDetails, t.similarProduct, t.similarProductFile,
             d.shareholding, d.incorporation, d.idProof,a.createAt,
-            p.juryId, p.criteria1, p.criteria2, p.criteria3, p.criteria4, p.criteria5, p.totalPoints, p.status, p.comments FROM users u 
+            p.tecUnique, p.criteria1, p.criteria2, p.criteria3, p.criteria4, p.criteria5, p.totalPoints, p.status, p.comments FROM users u 
             LEFT JOIN applicant a ON  u.uniqueId = a.uniqueId 
             LEFT JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant 
             LEFT JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant 
             LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant 
-            WHERE u.role = 'participant' and a.status=1 and a.assignedJury = '$juryId' and a.category = '$category' and a.problemsStatement = '$problemsStatement' GROUP BY a.email, a.problemsStatement ORDER BY a.uniqueId IS NULL,u.uniqueId";
-} else if (isset($_GET['c'])) {
+            WHERE u.role = 'participant' and a.status=1 and a.assignedJury = '$tecGroup' and a.category = '$category' and a.problemsStatement = '$problemsStatement' ORDER BY a.uniqueId IS NULL,u.uniqueId";
+} else if (isset($_GET['c']) && !empty($_GET['c'])) {
     $category = $_GET['c'];
     $sql = "SELECT fullname,u.mobile,u.email,u.categoryType,u.uniqueId AS UuniqueId,a.uniqueId AS AuniqueId,a.organizationName,a.city,a.state,a.postalAddress,a.category,a.applying,a.industry,a.otherindustry,a.problemsStatement,a.applicationVerticals,a.website,
             t.domain, t.product, t.productFile,t.presentationVideo, t.presentationURL, t.technologyLevel,t.proofPoC, t.describeProduct, t.productPatent,t.patentDetails, t.similarProduct, t.similarProductFile,
             d.shareholding, d.incorporation, d.idProof,a.createAt,
-            p.juryId, p.criteria1, p.criteria2, p.criteria3, p.criteria4, p.criteria5, p.totalPoints, p.status, p.comments FROM users u 
+            p.tecUnique, p.criteria1, p.criteria2, p.criteria3, p.criteria4, p.criteria5, p.totalPoints, p.status, p.comments FROM users u 
             LEFT JOIN applicant a ON  u.uniqueId = a.uniqueId 
             LEFT JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant 
             LEFT JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant 
             LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant 
-            WHERE u.role = 'participant' and a.status=1 and a.assignedJury = '$juryId' and a.category = '$category' GROUP BY a.email, a.problemsStatement ORDER BY a.uniqueId IS NULL,u.uniqueId";
-} else if (isset($_GET['ps'])) {
+            WHERE u.role = 'participant' and a.status=1 and a.assignedJury = '$tecGroup' and a.category = '$category' ORDER BY a.uniqueId IS NULL,u.uniqueId";
+} else if (isset($_GET['ps']) && !empty($_GET['ps'])) {
     $problemsStatement = $_GET['ps'];
     $sql = "SELECT fullname,u.mobile,u.email,u.categoryType,u.uniqueId AS UuniqueId,a.uniqueId AS AuniqueId,a.organizationName,a.city,a.state,a.postalAddress,a.category,a.applying,a.industry,a.otherindustry,a.problemsStatement,a.applicationVerticals,a.website,
             t.domain, t.product, t.productFile,t.presentationVideo, t.presentationURL, t.technologyLevel,t.proofPoC, t.describeProduct, t.productPatent,t.patentDetails, t.similarProduct, t.similarProductFile,
             d.shareholding, d.incorporation, d.idProof,a.createAt,
-            p.juryId, p.criteria1, p.criteria2, p.criteria3, p.criteria4, p.criteria5, p.totalPoints, p.status, p.comments FROM users u 
+            p.tecUnique, p.criteria1, p.criteria2, p.criteria3, p.criteria4, p.criteria5, p.totalPoints, p.status, p.comments FROM users u 
             LEFT JOIN applicant a ON  u.uniqueId = a.uniqueId 
             LEFT JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant 
             LEFT JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant 
             LEFT JOIN points p ON a.uniqueApplicant = p.uniqueApplicant 
-            WHERE u.role = 'participant' and a.status=1 and a.assignedJury = '$juryId' and a.problemsStatement = '$problemsStatement' GROUP BY a.email, a.problemsStatement ORDER BY a.uniqueId IS NULL,u.uniqueId";
+            WHERE u.role = 'participant' and a.status=1 and a.assignedJury = '$tecGroup' and a.problemsStatement = '$problemsStatement' ORDER BY a.uniqueId IS NULL,u.uniqueId";
 }
 
 $result = $conn->query($sql);
@@ -111,12 +112,12 @@ $result = $conn->query($sql);
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $row['mobile'] = '' . $row['mobile'];
-        $juryId = $row['juryId'];
-        $q1 = "SELECT * FROM users where uniqueId ='$juryId' ";
+        $tecUnique = $row['tecUnique'];
+        $q1 = "SELECT * FROM tecDetails where tecUnique ='$tecUnique' ";
         $res1 = $conn->query($q1);
         if ($res1->num_rows > 0) {
             $r1 = $res1->fetch_assoc();
-            $row['juryId'] = $r1['email'];
+            $row['tecUnique'] = $r1['emailId'];
         }
 
         if ($row['UuniqueId'] == "") {

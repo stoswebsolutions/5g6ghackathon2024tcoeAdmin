@@ -1,11 +1,11 @@
 <?php
 session_start();
 include '../db_connect.php';
-if (!isset($_SESSION['juryId'])) {
+if (!isset($_SESSION['tecUnique'])) {
     header("Location: ../home");
     exit();
 }
-$juryId = $_SESSION['juryId'];
+$tecUnique = $_SESSION['tecUnique'];
 if (!isset($_GET['ua'])) {
     header("Location: ../home");
     exit();
@@ -53,7 +53,7 @@ $participantId = '';
     <div class="container-fluid">
         <div class="row mt-2">
             <?php
-            $sql = "SELECT a.*, t.*, d.* FROM applicant a  JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant  JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant WHERE a.uniqueApplicant = '$uniqueApplicant' and a.status=1 GROUP BY a.email, a.problemsStatement";
+            $sql = "SELECT a.*, t.*, d.* FROM applicant a  JOIN technical t ON a.uniqueApplicant = t.uniqueApplicant  JOIN documents d ON a.uniqueApplicant = d.uniqueApplicant WHERE a.uniqueApplicant = '$uniqueApplicant' and a.status=1";
             $result = $conn->query($sql);
             if ($result->num_rows <= 0) {
             ?>
@@ -188,7 +188,7 @@ $participantId = '';
                                     </button>
                                 </h2>
                                 <div id="collapseTwo<?= $row['uniqueApplicant'] ?>"
-                                    class="accordion-collapse collapse"
+                                    class="accordion-collapse collapse show"
                                     aria-labelledby="headingTwo<?= $row['uniqueApplicant'] ?>"
                                     data-bs-parent="#applicationAccordion">
                                     <div class="accordion-body">
@@ -302,7 +302,7 @@ $participantId = '';
                                     </button>
                                 </h2>
                                 <div id="collapseThree<?= $row['uniqueApplicant'] ?>"
-                                    class="accordion-collapse collapse"
+                                    class="accordion-collapse collapse show"
                                     aria-labelledby="headingThree<?= $row['uniqueApplicant'] ?>"
                                     data-bs-parent="#applicationAccordion">
                                     <div class="accordion-body">
@@ -345,58 +345,36 @@ $participantId = '';
                     <?php
                     $sql1 = "SELECT * FROM points where uniqueApplicant = '$uniqueApplicant'";
                     $result1 = $conn->query($sql1);
+                    $count = 0;
+                    $criteria1 = 0;
+                    $criteria2 = 0;
+                    $criteria3 = 0;
+                    $criteria4 = 0;
+                    $criteria5 = 0;
+                    $status = '';
+                    $totalPoints = 0;
+                    $comments = '';
+                    $tecUnique1 = 1;
                     if ($result1->num_rows > 0) {
                         while ($row1 = $result1->fetch_assoc()) {
-                    ?>
-                            <div class="table-responsive shadow">
-                                <table class="table table-striped">
-                                    <tr>
-                                        <th>Idea Originality: Novelty and innovation of the solution. (30%)</th>
-                                        <td class="bg-success text-white rounded"><?= $row1['criteria1'] ?></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Problem Relevance: How well the solution addresses a real-world problem. (30%)</th>
-                                        <td class="bg-success text-white rounded"><?= $row1['criteria2'] ?></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Technical Feasibility: Practicality and viability of the solution. (15%)</th>
-                                        <td class="bg-success text-white rounded"><?= $row1['criteria3'] ?></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Team Skill Set: Balance of technical, domain, and entrepreneurial skills. (15%)</th>
-                                        <td class="bg-success text-white rounded"><?= $row1['criteria4'] ?></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Prior Hackathon Experience: Experience in rapid prototyping and time constraints. (10%)</th>
-                                        <td class="bg-success text-white rounded"><?= $row1['criteria5'] ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" class="bg-success text-white rounded text-center">
-                                            <?php
-                                            if ($row1['status'] == 1) {
-                                                echo "Hold";
-                                            }
-                                            if ($row1['status'] == 2) {
-                                                echo "Accepted";
-                                            }
-                                            if ($row1['status'] == 3) {
-                                                echo "Rejected";
-                                            }
-                                            ?>
-                                            <spna class="text-warning">Total Marks: (<?= $row1['totalPoints'] ?>) </spna>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" class="text-center text-success"><?= $row1['comments'] ?></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        <?php
+                            $count = $count + 1;
+                            if ($tecUnique == $row1['tecUnique']) {
+                                $tecUnique1 = 2;
+                            }
+                            $criteria1 = $row1['criteria1'] + $criteria1;
+                            $criteria2 = $row1['criteria2'] + $criteria2;
+                            $criteria3 = $row1['criteria3'] + $criteria3;
+                            $criteria4 = $row1['criteria4'] + $criteria4;
+                            $criteria5 = $row1['criteria5'] + $criteria5;
+                            $status = $row1['status'];
+                            $totalPoints = $row1['totalPoints'] + $totalPoints;
+                            $comments = $row1['comments'];
                         }
-                    } else {
-                        ?>
+                    }
+                    if ($count < 4 && $tecUnique1 == 1) {
+                    ?>
                         <form action="points" method="post" onsubmit="return validateForm()">
-                            <input type="hidden" name="juryId" id="juryId" value="<?= $juryId ?>">
+                            <input type="hidden" name="tecUnique" id="tecUnique" value="<?= $tecUnique ?>">
                             <input type="hidden" name="participantId" id="participantId" value="<?= $participantId ?>">
                             <input type="hidden" name="uniqueApplicant" id="uniqueApplicant" value="<?= $uniqueApplicant ?>">
                             <div class="table-responsive shadow">
@@ -450,6 +428,49 @@ $participantId = '';
                     <?php
                     }
                     ?>
+                    <!-- <div class="table-responsive shadow mt-3">
+                        <table class="table table-striped">
+                            <tr>
+                                <th>Idea Originality: Novelty and innovation of the solution. (30%)</th>
+                                <td class="bg-success text-white rounded"><?= $criteria1 ?></td>
+                            </tr>
+                            <tr>
+                                <th>Problem Relevance: How well the solution addresses a real-world problem. (30%)</th>
+                                <td class="bg-success text-white rounded"><?= $criteria2 / $count ?></td>
+                            </tr>
+                            <tr>
+                                <th>Technical Feasibility: Practicality and viability of the solution. (15%)</th>
+                                <td class="bg-success text-white rounded"><?= $criteria3 / $count ?></td>
+                            </tr>
+                            <tr>
+                                <th>Team Skill Set: Balance of technical, domain, and entrepreneurial skills. (15%)</th>
+                                <td class="bg-success text-white rounded"><?= $criteria4 / $count ?></td>
+                            </tr>
+                            <tr>
+                                <th>Prior Hackathon Experience: Experience in rapid prototyping and time constraints. (10%)</th>
+                                <td class="bg-success text-white rounded"><?= $criteria5 / $count ?></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="bg-success text-white rounded text-center">
+                                    <?php
+                                    if ($status == 1) {
+                                        echo "Hold";
+                                    }
+                                    if ($status == 2) {
+                                        echo "Accepted";
+                                    }
+                                    if ($status == 3) {
+                                        echo "Rejected";
+                                    }
+                                    ?>
+                                    <spna class="text-warning">Total Marks: (<?= $totalPoints / $count ?>) </spna>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-center text-success"><?= $comments ?></td>
+                            </tr>
+                        </table>
+                    </div> -->
                 </div>
             <?php
             }

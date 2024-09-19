@@ -62,7 +62,7 @@
                             class="nav-link"
                             data-bs-toggle="modal"
                             data-bs-target="#authModal1"
-                            href="#login1">Jury</a>
+                            href="#login1">TEC</a>
                     </li>
                     <li class="nav-item">
                         <a
@@ -93,7 +93,7 @@
                             class="nav-link"
                             data-bs-toggle="modal"
                             data-bs-target="#authModal1"
-                            href="#login1">Jury</a>
+                            href="#login1">TEC</a>
                     </li>
                     <li class="nav-item">
                         <a
@@ -982,7 +982,7 @@
                 </div>
             </div>
         </div>
-        <!-- Jury login -->
+        <!-- Tec login -->
         <div
             class="modal fade"
             id="authModal1"
@@ -1006,7 +1006,7 @@
                                 id="login1"
                                 role="tabpanel">
                                 <div class="text-center p-1">
-                                    <h4>Login to Jury Account</h4>
+                                    <h4>Login to TEC Account</h4>
                                     <p>Welcome back! Please enter your details</p>
                                 </div>
                                 <form action="login1.php" method="post">

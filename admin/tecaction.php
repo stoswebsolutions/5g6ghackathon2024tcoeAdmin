@@ -6,15 +6,15 @@ if (!isset($_SESSION['adminId'])) {
     exit();
 }
 $adminId = $_SESSION['adminId'];
-$juryId = $_POST['juryId'];
+$tecGroup = $_POST['tecGroup'];
 $uniqueApplicants = $_POST['uniqueApplicant'];
 $uniqueApplicants1 = $_POST['uniqueApplicant1'];
-if (!empty($juryId) && !empty($uniqueApplicants) && is_array($uniqueApplicants)) {
+if (!empty($tecGroup) && !empty($uniqueApplicants) && is_array($uniqueApplicants)) {
     $complete1 = [];
     $complete2 = [];
     $complete3 = [];
     foreach ($uniqueApplicants as $uniqueApplicant) {
-        $sql = "UPDATE applicant SET assignedJury = '$juryId' WHERE uniqueApplicant = '$uniqueApplicant' ";
+        $sql = "UPDATE applicant SET assignedJury = '$tecGroup' WHERE uniqueApplicant = '$uniqueApplicant' ";
         if ($conn->query($sql) === TRUE) {
             $complete1[] = $uniqueApplicant;
         } else {
@@ -22,7 +22,7 @@ if (!empty($juryId) && !empty($uniqueApplicants) && is_array($uniqueApplicants))
         }
     }
     foreach ($uniqueApplicants1 as $uniqueApplicant1) {
-        $sql1 = "UPDATE applicant SET assignedJury = '0' WHERE uniqueApplicant = '$uniqueApplicant1' ";
+        $sql1 = "UPDATE applicant SET assignedJury = 'N/A' WHERE uniqueApplicant = '$uniqueApplicant1' ";
         if ($conn->query($sql1) === TRUE) {
             $complete3[] = $uniqueApplicant1;
         }
@@ -32,5 +32,5 @@ if (!empty($juryId) && !empty($uniqueApplicants) && is_array($uniqueApplicants))
 } else {
     echo "<script>alert('Please select at least one applicant and provide valid inputs.');</script>";
 }
-echo "<script> window.location.href='juryassign';</script>";
+echo "<script> window.location.href='tecassign';</script>";
 $conn->close();
