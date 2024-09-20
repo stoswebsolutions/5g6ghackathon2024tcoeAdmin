@@ -12,8 +12,8 @@ $uniqueId = $_SESSION['adminId'];
 
 <head>
     <meta charset="UTF-8" />
-    <title>Applications</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TEC Reports</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
@@ -28,11 +28,11 @@ $uniqueId = $_SESSION['adminId'];
             </a>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="listDropdown" role="button"
+                    <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-circle" style="font-size: 2rem"></i>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="listDropdown">
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                         <li><a class="dropdown-item" href="application">Home</a></li>
                         <li><a class="dropdown-item" href="users">Users</a></li>
                         <li><a class="dropdown-item" href="applications">Applications</a></li>
@@ -46,58 +46,51 @@ $uniqueId = $_SESSION['adminId'];
         </div>
     </header>
     <div class="container">
-        <h4 class="mt-2">Application List</h4>
+        <!-- <h4 class="mt-2"><button class="btn btn-success" onclick="downloadApplicantData()">Download Applicant Data</button></h4> -->
         <div class="table-responsive mt-2">
             <table id="data-table" class="table table-striped">
                 <thead>
                     <tr>
-                        <th>No.</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Category</th>
-                        <th>Website</th>
-                        <th>City</th>
-                        <th>Action</th>
+                        <th>S.No</th>
+                        <th>TEC Group</th>
+                        <th>TEC Member Email</th>
+                        <th>Assigned</th>
+                        <th>Completed</th>
+                        <th class="bg bg-primary">Hold</th>
+                        <th class="bg bg-success">Accepted</th>
+                        <th class="bg bg-danger">Rejected</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                    // $sql = "SELECT * FROM applicant where status=1 GROUP BY email, problemsStatement";
-                    $sql = "SELECT * FROM applicant where status = 1 ORDER BY email, problemsStatement";
-                    $stmt = $conn->prepare($sql);
-                    $stmt->execute();
-                    $result1 = $stmt->get_result();
-                    if ($result1->num_rows > 0) {
-                        $count = 0;
-                        while ($row = $result1->fetch_assoc()) {
-                            $count = $count + 1;
-                            $applicantName = $row['applicantName'];
-                            $organizationName = $row['organizationName'];
-                            $email = $row['email'];
-                            $contactNumber = $row['contactNumber'];
-                            $city = $row['city'];
-                            $state = $row['state'];
-                            $postalAddress = $row['postalAddress'];
-                            $category = $row['category'];
-                            $applying = $row['applying'];
-                            $industry = $row['industry'];
-                            $website = $row['website'];
-                            if ($row['status'] == 1) {
-                                $border = "border-success";
+                    $sql = " SELECT td.tecUnique AS TECMember, td.tecGroup AS TECgroup, td.emailId AS emailId, COUNT(p.tecUnique) AS completed, SUM(CASE WHEN p.status = 1 THEN 1 ELSE 0 END) AS hold, SUM(CASE WHEN p.status = 2 THEN 1 ELSE 0 END) AS accept, SUM(CASE WHEN p.status = 3 THEN 1 ELSE 0 END) AS reject FROM tecDetails td JOIN points p ON td.tecUnique = p.tecUnique GROUP BY td.tecUnique, td.tecGroup, td.emailId ";
+                    $result = $conn->query($sql);
+                    $count = 1;
+                    $Tajc = 0;
+                    $Ttec = 0;
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            $TECgroup = $row['TECgroup'];
+                            $sql1 = "SELECT count(assignedJury) as assignedJury FROM `applicant` WHERE assignedJury = '$TECgroup' ";
+                            $result1 = $conn->query($sql1);
+                            if ($result1->num_rows > 0) {
+                                $row1 = $result1->fetch_assoc();
+                                $assignedJuryCount1 = $row1['assignedJury'];
                             } else {
-                                $border = "border-danger";
+                                $assignedJuryCount1 = 0;
                             }
+                            $Ttec = $Ttec + $row['completed'];
+                            $Tajc = $Tajc + $assignedJuryCount1;
                     ?>
-                            <tr class="<?= $border ?>">
-                                <td><?= $count ?></td>
-                                <td><?= $applicantName ?><br><small>Phone: <?= $contactNumber ?><br><?= $applying ?></small></td>
-                                <td><?= $email ?></td>
-                                <td><?= $category ?></td>
-                                <td>TCOE India<br><small><?= $website ?></small></td>
-                                <td><?= $city ?>-<?= $state ?></td>
-                                <td>
-                                    <a href="applicationView.php?ua=<?= $row['uniqueApplicant'] ?>" class="btn btn-primary">View Application</a>
-                                </td>
+                            <tr>
+                                <td><?= $count++ ?></td>
+                                <td><?= $row['TECgroup'] ?></td>
+                                <td><?= $row['emailId'] ?></td>
+                                <td><?= $assignedJuryCount1 ?></td>
+                                <td><?= $row['completed'] ?></td>
+                                <td class="bg bg-primary"><?= $row['hold'] ?></td>
+                                <td class="bg bg-success"><?= $row['accept'] ?></td>
+                                <td class="bg bg-danger"><?= $row['reject'] ?></td>
                             </tr>
                     <?php
                         }
@@ -106,19 +99,28 @@ $uniqueId = $_SESSION['adminId'];
                     }
                     ?>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4"></td>
+                        <!-- <td>Total Applications: <?= $Tajc ?></td> -->
+                        <td>Total Completed: <?= $Ttec ?></td>
+                        <td colspan="3"></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+
 <script>
-    var table = $("#data-table").DataTable({
+    var table = $("#data-table1").DataTable({
         dom: "Bfrtip",
         buttons: [{
             extend: 'excelHtml5',

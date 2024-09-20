@@ -46,6 +46,7 @@ $uniqueApplicant = $_GET['ua'];
                         <li><a class="dropdown-item" href="applications">Applications</a></li>
                         <li><a class="dropdown-item" href="tecassign">TEC Assign</a></li>
                         <li><a class="dropdown-item" href="tecevaluation">TEC Evaluation</a></li>
+                        <li><a class="dropdown-item" href="tecReports">TEC Reports</a></li>
                         <li><a class="dropdown-item" href="../logout">Logout</a></li>
                     </ul>
                 </li>

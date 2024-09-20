@@ -37,7 +37,7 @@ $participantId = '';
                 <img src="../assets/images/Tcoe_logo.jpg" alt="Logo" width="80" height="50" />
             </a>
             <ul class="navbar-nav ms-auto">
-            <li><a class="" href="applications">Home</a></li>
+                <li><a class="" href="applications">Home</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="listDropdown" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
@@ -342,7 +342,6 @@ $participantId = '';
                     ?>
                 </div>
                 <div class="col-md-5">
-                    <h5 class="text-center">Review and Assign Marks</h5>
                     <?php
                     $sql1 = "SELECT * FROM points where uniqueApplicant = '$uniqueApplicant'";
                     $result1 = $conn->query($sql1);
@@ -374,6 +373,7 @@ $participantId = '';
                     }
                     if ($count < 4 && $tecUnique1 == 1) {
                     ?>
+                        <h5 class="text-center">Review and Assign Marks</h5>
                         <form action="points" method="post" onsubmit="return validateForm()">
                             <input type="hidden" name="tecUnique" id="tecUnique" value="<?= $tecUnique ?>">
                             <input type="hidden" name="participantId" id="participantId" value="<?= $participantId ?>">

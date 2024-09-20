@@ -38,6 +38,7 @@ $uniqueId = $_SESSION['adminId'];
                         <li><a class="dropdown-item" href="applications">Applications</a></li>
                         <li><a class="dropdown-item" href="tecassign">TEC Assign</a></li>
                         <li><a class="dropdown-item" href="tecevaluation">TEC Evaluation</a></li>
+                        <li><a class="dropdown-item" href="tecReports">TEC Reports</a></li>
                         <li><a class="dropdown-item" href="../logout">Logout</a></li>
                     </ul>
                 </li>
@@ -73,9 +74,9 @@ $uniqueId = $_SESSION['adminId'];
                     $sql = "SELECT * FROM applicant WHERE status = 1 and assignedJury != 'N/A' ";
                     $result = $conn->query($sql);
                     if ($result->num_rows > 0) {
-                        $count = 0;
+                        $count = 1;
                         while ($row = $result->fetch_assoc()) {
-                            $count = $count + 1;
+                            // $count = $count + 1;
                             $uniqueApplicant = $row['uniqueApplicant'];
                             $sql1 = "SELECT * FROM points WHERE uniqueApplicant = '$uniqueApplicant' ";
                             $result1 = $conn->query($sql1);
@@ -114,7 +115,7 @@ $uniqueId = $_SESSION['adminId'];
                                 }
                     ?>
                                 <tr>
-                                    <td><?= $count ?></td>
+                                    <td><?= $count++ ?></td>
                                     <td><?= $row['applicantName'] ?></td>
                                     <td><?= $row['problemsStatement'] ?></td>
                                     <td><?= $row['category'] ?></td>
